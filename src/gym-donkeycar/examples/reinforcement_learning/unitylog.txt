@@ -1,0 +1,55 @@
+Mono path[0] = 'C:/users/Usuari/OneDrive/Escritorio/4t/PRIMAVERA/I2RCED/DonkeySimWin/donkey_sim_Data/Managed'
+Mono config path = 'C:/users/Usuari/OneDrive/Escritorio/4t/PRIMAVERA/I2RCED/DonkeySimWin/MonoBleedingEdge/etc'
+Initialize engine version: 2020.3.4f1 (0abb6314276a)
+[Subsystems] Discovering subsystems at path C:/users/Usuari/OneDrive/Escritorio/4t/PRIMAVERA/I2RCED/DonkeySimWin/donkey_sim_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: Intel(R) HD Graphics 620 (ID=0x5916)
+    Vendor:   
+    VRAM:     8126 MB
+    Driver:   27.20.100.8477
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.154 seconds
+D3D11 device created for Microsoft Media Foundation video decoding.
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.415800 ms
+SDSandbox Server starting.
+
+Server Listening on: 0.0.0.0:9091
+
+Waiting for a connection...
+
+SDSandbox Server starting.
+
+Server Listening on: 0.0.0.0:9092
+
+Waiting for a connection...
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 4d58 -> priority: 1 
+  Thread -> id: 4b80 -> priority: 1 
+generated_track
+
+loaded scene
+
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 15.604900 ms
+JustOne removing instance.MainThDisp
+
+JustOne removing instance.SandboxServer
+
+loading: racePi2
+
+JustOne removing instance.SandboxPrivateAPIServer
+
+
+Unloading 35 unused Assets to reduce memory usage. Loaded Objects now: 2526.
+Total: 3.576500 ms (FindLiveObjects: 0.212200 ms CreateObjectMapping: 0.180300 ms MarkObjects: 1.768200 ms  DeleteObjects: 1.415400 ms)
+
+Server stopped.
+
+Server stopped.
+
