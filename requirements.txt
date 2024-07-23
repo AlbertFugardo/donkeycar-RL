@@ -1,4 +1,3 @@
-# -e ./donkeycar
 -e ./src/gym-donkeycar
 -e ./src/stable-baselines3
 
