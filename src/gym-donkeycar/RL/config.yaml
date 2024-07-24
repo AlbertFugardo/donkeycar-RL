@@ -1,6 +1,4 @@
 model_name: "ppo_report"
-loaded_model_name: "ppo_trained_650k"
-normalize: True
 config: {     
     policy_type: "MlpPolicy", 
     total_timesteps: 1000000,
@@ -9,10 +7,11 @@ config: {
     use_autoencoder: True,
     ae_path: "./autoencoders/ae-32_100k.pkl",
     use_history: True,
+    normalize: True,
     horizon: 2,
     save_images: [False,15000,"autoencoders/test_images/"], # [if save images, num of steps/frames, output folder]
-    load_model: [True, "", "models_test", "replay_buffers", "vec_envs_test"], # [if loading a model, model name (it is the same as loaded_model_name), model folder, replay buffer folder, vec env folder]
-    checkpoints: [False, "replay_buffers", "", "vec_envs_test"] # [save_replay_buffer, save_replay_buffer path, normalize, vec_env path]
+    load_model: [True, "ppo_trained_650k", "models_test", "replay_buffers", "vec_envs_test"], # [if loading a model, loaded model name, model folder, replay buffer folder, vec env folder]
+    checkpoints: [False, "replay_buffers", "vec_envs_test"] # [save_replay_buffer, save_replay_buffer path, vec_env path]
     }
 
 conf: { # configuration of the environment
