@@ -1,0 +1,43 @@
+model_name: "ppo_report"
+loaded_model_name: "ppo_trained_650k"
+normalize: True
+config: {     
+    policy_type: "MlpPolicy", 
+    total_timesteps: 1000000,
+    env_name: "donkey-generated-track-v0",
+    model_path: "models_report",
+    use_autoencoder: True,
+    ae_path: "./autoencoders/ae-32_100k.pkl",
+    use_history: True,
+    horizon: 2,
+    save_images: [False,15000,"autoencoders/test_images/"], # [if save images, num of steps/frames, output folder]
+    load_model: [True, "", "models_test", "replay_buffers", "vec_envs_test"], # [if loading a model, model name (it is the same as loaded_model_name), model folder, replay buffer folder, vec env folder]
+    checkpoints: [False, "replay_buffers", "", "vec_envs_test"] # [save_replay_buffer, save_replay_buffer path, normalize, vec_env path]
+    }
+
+conf: { # configuration of the environment
+    body_style: "donkey", # body_style = "donkey" | "bare" | "car01" | "f1" | "cybertruck"
+    body_rgb: [247, 152, 29], # body_rgb  = (128, 128, 128) tuple of ints
+    car_name: "", # car_name = "string less than 64 char"
+    font_size: 40,
+    steer_limit: 0.5, # default was 1.0, but it is better to change it, that much is not necessary
+    throttle_min: -0.2, # default is 0.0
+    throttle_max: 1.5, # default is 1.0
+    }
+
+hyperparameters: {
+    learning_rate: !!float 5e-5, # default 3e-4
+    n_steps: 2048, # default 2048 (rollout buffer size)
+    batch_size: 64, # default 64
+    n_epochs: 10, # default 10
+    gamma: 0.99, # default 0.99
+    clip_range: 0.2, # default 0.2
+    ent_coef: 0.0, # default 0.0
+    vf_coef: 0.5, # default 0.5
+    policy_kwargs:  "dict(log_std_init=0.0,
+                      net_arch=dict(pi=[256, 256], vf=[256, 256]),
+                      activation_fn=nn.Tanh,
+                      optimizer_kwargs=dict(betas=(0.9,0.999), weight_decay=0),
+                      )"
+}                   # default dict(log_std_init=0.0, net_arch=[dict(pi=[64, 64], vf=[64, 64])], activation_fn=nn.Tanh)
+                    # default dict(betas=(0.9,0.999), weight_decay=0.0))

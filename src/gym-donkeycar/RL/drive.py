@@ -13,8 +13,9 @@ import pickle
 import cv2
 import os
 from datetime import datetime
+import yaml
 
-def test_model(model, env, log = False, num_tests = 10, save_images = [False]):
+def test_model(model, env, num_tests = 10, save_images = [False]):
     if save_images[0]:
         now = datetime.now()
         unique_id = now.strftime("%Y%m%d%H%M%S")
@@ -33,7 +34,7 @@ def test_model(model, env, log = False, num_tests = 10, save_images = [False]):
             if render:
                 env.render()
             img = info[0]["image"]
-            path = os.path.join(output_folder, f"{90000+i}.jpg")
+            path = os.path.join(output_folder, f"{unique_id+i}.jpg")
             # Convert to BGR
             cv2.imwrite(path, img[:, :, ::-1])
 
@@ -50,10 +51,7 @@ def test_model(model, env, log = False, num_tests = 10, save_images = [False]):
             ep_laps = 0
             while not done:
                 action, _ = model.predict(obs, deterministic=True)
-                # if action[0][1] < 0.5:
-                #      print("A")
                 obs, reward, done, info = env.step(action)
-                #print(reward)
                 lap_time = info[0]['last_lap_time']
                 episode_laps = info[0]['lap_count']
                 if episode_laps > ep_laps:
@@ -70,47 +68,24 @@ def test_model(model, env, log = False, num_tests = 10, save_images = [False]):
         print(f"Done testing! Times: {times} \n Average time: {avg_time}")
         obs = env.reset()
 
-model_name = "ppo_report"
-loaded_model_name = "ppo_report_best"
-normalize = True
-config = {
-    "policy_type": "MlpPolicy",
-    "total_timesteps": 1000000,
-    "env_name": "donkey-generated-track-v0",
-    "model_path": os.path.join("models_report", model_name),
-    "use_autoencoder": True,
-    "ae_path": "./autoencoders/ae-32_100k.pkl",
-    "use_history": True,
-    "horizon": 2,
-    "save_images": [False,15000,"autoencoders/test_images/"], # [if save images, num of steps/frames, output folder]
-    "normalize": normalize,
-    "load_model": [True, loaded_model_name, "models_report", "replay_buffers", "vec_envs"], # [if loading a model, model name, model folder, replay buffer folder, vec env folder]
-    "checkpoints": [False, os.path.join("replay_buffers", model_name), normalize, os.path.join("vec_envs", model_name)] # [save_replay_buffer, save_replay_buffer path, normalize, vec_env path]
-}
-
-conf = { # configuration of the environment
-    "body_style": "donkey", # body_style = "donkey" | "bare" | "car01" | "f1" | "cybertruck"
-    "body_rgb": (247, 152, 29), # body_rgb  = (128, 128, 128) tuple of ints
-    "car_name": "", # car_name = "string less than 64 char"
-    "font_size": 40,
-    "steer_limit": 0.5, # default was 1.0, but it is better to change it, that much is not necessary
-    "throttle_min": -0.2, # default is 0.0
-    "throttle_max": 1.5, # default is 1.0
-}
-
-hyperparameters = {
-    "learning_rate": 5e-5, # default 3e-4
-    "n_steps": 2048, # default 2048 (rollout buffer size)
-    "batch_size": 64, # default 64
-    "n_epochs": 10, # default 10
-    "gamma": 0.99, # default 0.99
-    "clip_range": 0.2, # default 0.2
-    "ent_coef": 0.0, # default 0.0
-    "vf_coef": 0.5, # default 0.5
-    #"policy_kwargs": dict(log_std_init=0.0, net_arch=[dict(pi=[256, 256], vf=[256, 256])], activation_fn=nn.Tanh), # default dict(log_std_init=0.0, net_arch=[dict(pi=[64, 64], vf=[64, 64])], activation_fn=nn.Tanh)
-    "policy_kwargs": dict(log_std_init=0.0, net_arch=[dict(pi=[256, 256], vf=[256, 256])], activation_fn=nn.Tanh, # default dict(log_std_init=0.0, net_arch=[dict(pi=[64, 64], vf=[64, 64])], activation_fn=nn.Tanh)
-                         optimizer_kwargs=dict(betas=(0.9,0.999), weight_decay=0)),  # default dict(betas=(0.9,0.999), weight_decay=0.0))
-}
+# we read the config of the run
+with open("./config.yaml", "r") as f:
+    config_yaml = yaml.safe_load(f)
+    print("Configuration read:\n" + yaml.dump(config_yaml, default_flow_style=False))
+    model_name = config_yaml["model_name"]
+    loaded_model_name = config_yaml["loaded_model_name"]
+    normalize = config_yaml["normalize"]
+    config = config_yaml["config"]
+    config["model_path"] = os.path.join(config["model_path"], model_name)
+    config["normalize"] = normalize
+    config["load_model"][1] = loaded_model_name
+    config["checkpoints"][1] = os.path.join(config["checkpoints"][1], model_name)
+    config["checkpoints"][2] = normalize
+    config["checkpoints"][3] = os.path.join(config["checkpoints"][3], model_name)
+    conf = config_yaml["conf"]
+    hyperparameters = config_yaml["hyperparameters"]
+    hyperparameters["policy_kwargs"] = eval(hyperparameters["policy_kwargs"])
+    
 
 # we read the center track line points
 with open("center_line/center_line_1452", "rb") as fp:
@@ -139,7 +114,6 @@ if config["normalize"]:
             
 test = True
 if test:
-    #model = PPO.load("models/ppo_sectors_variable_lr_350k")
     model = PPO.load(os.path.join(config["load_model"][2],config["load_model"][1]), env=env)
     print(model.policy)
     print(model.policy.action_dist)
@@ -158,7 +132,7 @@ if test:
     #     return total_params
     # print(count_parameters(model.policy))
 
-    test_model(model, env, log=False, num_tests=5, save_images = config["save_images"])
+    test_model(model, env, num_tests=5, save_images = config["save_images"])
 
 else:
     run = wandb.init(
@@ -198,7 +172,7 @@ else:
         callback=callbacks,
     )
 
-    test_model(model, env, log=True)
+    test_model(model, env)
     model.save(config["model_path"])
     run.finish()
 
