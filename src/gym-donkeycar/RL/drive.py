@@ -15,6 +15,7 @@ import os
 from datetime import datetime
 import yaml
 from prettytable import PrettyTable
+import argparse
 
 
 def test_model(model, env, num_tests = 10, save_images = [False]):
@@ -184,15 +185,26 @@ def train(config, conf, hyperparameters, env, cbks):
     model.save(config["model_path"])
     run.finish()
         
-        
+
+def run_type():
+    parser = argparse.ArgumentParser(description = "Train or Test a car in the DonkeyCar simulator!")
+    parser.add_argument("-t", "--train", action="store_true", default=False, help="Train a model")
+    args = parser.parse_args()
+    if args.train:
+        print("Training!")
+    else:
+        print("Testing!")
+    return args.train
+
+
 if __name__ == "__main__":
+    training = run_type()
     config, conf, hyperparameters, callbacks = read_config("./config.yaml") # read configuration from the config file
     env = create_env(config, conf, "center_line/center_line_1452") # create the environment
                 
-    testing = True
-    if testing:
-        test(config, env)
-    else:
+    if training:
         train(config, conf, hyperparameters, env, callbacks)
+    else:
+        test(config, env)
 
     env.close()
