@@ -35,7 +35,7 @@ class AutoencoderWrapper(gym.Wrapper):
     
 class HistoryWrapper(gym.Wrapper):
     """
-    Stack past observations and actions to give an history to the agent.
+    Stack past observations and actions to give a history to the agent.
 
     :param env: (gym.Env)
     :param horizon: (int) Number of steps to keep in the history.

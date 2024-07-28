@@ -82,7 +82,8 @@ def read_config(config_path):
         conf = config_yaml["conf"]
         hyperparameters = config_yaml["hyperparameters"]
         hyperparameters["policy_kwargs"] = eval(hyperparameters["policy_kwargs"])
-        return config, conf, hyperparameters
+        callbacks = config_yaml["callbacks"]
+        return config, conf, hyperparameters, callbacks
 
 
 def create_env(config, conf, center_line):
@@ -136,7 +137,7 @@ def test(config, env):
     return
         
 
-def train(config, conf, hyperparameters, env):
+def train(config, conf, hyperparameters, env, cbks):
     run = wandb.init(
             project="testing",
             config=dict(config=config,hyperparameters=hyperparameters,conf=conf), # merge of the three dictionaries
@@ -155,15 +156,25 @@ def train(config, conf, hyperparameters, env):
             print("Loading replay buffer")
             model.load_replay_buffer(replay_buffer_path)
             
-    callbacks = [WandbCallback(gradient_save_freq=100,verbose=2,),
-                LapTimeCallback(), 
-                CheckpointCallback(save_freq=10000,
+    callbacks = [WandbCallback(gradient_save_freq=100,verbose=2,),]
+    for cbk in cbks:
+        if cbk == "LapTime":
+            callbacks.append(LapTimeCallback())
+            print("Using LapTimeCallback")
+        elif cbk == "Checkpoint":
+            callbacks.append(CheckpointCallback(save_freq=10000,
                                     save_path=config["model_path"],
                                     save_replay_buffer=config["checkpoints"][0],
                                     replay_buffer_path=config["checkpoints"][1],
                                     normalize=config["normalize"],
-                                    normalize_path=config["checkpoints"][2]),]
-                #LearningRateCallback()]
+                                    normalize_path=config["checkpoints"][2]))
+            print("Using CheckpointCallback")
+        elif cbk == "LearningRate":
+            callbacks.append(LearningRateCallback())
+            print("Using LearningRateCallback")
+        else:
+            print("Unknown Callback: " + cbk)
+
     model.learn(
         total_timesteps=config["total_timesteps"],
         callback=callbacks,
@@ -175,13 +186,13 @@ def train(config, conf, hyperparameters, env):
         
         
 if __name__ == "__main__":
-    config, conf, hyperparameters = read_config("./config.yaml") # read configuration from the config file
+    config, conf, hyperparameters, callbacks = read_config("./config.yaml") # read configuration from the config file
     env = create_env(config, conf, "center_line/center_line_1452") # create the environment
                 
     testing = True
     if testing:
         test(config, env)
     else:
-        train(config, conf, hyperparameters, env)
+        train(config, conf, hyperparameters, env, callbacks)
 
     env.close()
