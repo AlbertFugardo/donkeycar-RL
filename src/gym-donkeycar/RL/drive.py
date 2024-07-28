@@ -70,7 +70,7 @@ def test_model(model, env, num_tests = 10, save_images = [False]):
 
 
 def read_config(config_path):
-    # we read the config of the run
+    # we read the config
     with open(config_path, "r") as f:
         config_yaml = yaml.safe_load(f)
         print("Configuration read:\n" + yaml.dump(config_yaml, default_flow_style=False))
@@ -124,22 +124,20 @@ def count_parameters(model): # function to print information about a model
     print(f"Total Trainable Params: {total_params}")
     return total_params
         
-        
-if __name__ == "__main__":
-    config, conf, hyperparameters = read_config("./config.yaml")
-    env = create_env(config, conf, "center_line/center_line_1452")
-                
-    test = True
-    if test:
-        model = PPO.load(os.path.join(config["load_model"][2],config["load_model"][1]), env=env)
-        print("Model Policy:\n", model.policy, sep="")
-        print("Model Policy Action Distribution:\n", model.policy.action_dist, sep="")
-        print("Model Parameters:")
-        count_parameters(model.policy)
 
-        test_model(model, env, num_tests=5, save_images = config["save_images"])
-    else:
-        run = wandb.init(
+def test(config, env):
+    model = PPO.load(os.path.join(config["load_model"][2],config["load_model"][1]), env=env)
+    print("Model Policy:\n", model.policy, sep="")
+    print("Model Policy Action Distribution:\n", model.policy.action_dist, sep="")
+    print("Model Parameters:")
+    count_parameters(model.policy)
+
+    test_model(model, env, num_tests=5, save_images = config["save_images"])
+    return
+        
+
+def train(config, conf, hyperparameters, env):
+    run = wandb.init(
             project="testing",
             config=dict(config=config,hyperparameters=hyperparameters,conf=conf), # merge of the three dictionaries
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
@@ -147,37 +145,43 @@ if __name__ == "__main__":
             save_code=True,  # optional
         )
 
-        model = PPO(config["policy_type"], env, verbose=1, tensorboard_log=f"runs/{run.id}", **hyperparameters)
-        if config["load_model"][0]:
-            print("Loading pretrained agent")
+    model = PPO(config["policy_type"], env, verbose=1, tensorboard_log=f"runs/{run.id}", **hyperparameters)
+    if config["load_model"][0]:
+        print("Loading pretrained agent")
 
-            # if "policy_kwargs" in hyperparameters.keys():
-            #     del hyperparameters["policy_kwargs"]
-
-            model = PPO.load(os.path.join(config["load_model"][2],config["load_model"][1]), env=env, verbose=1, tensorboard_log=f"runs/{run.id}", **hyperparameters)
-            replay_buffer_path = os.path.join(config["load_model"][3],config["load_model"][1])+".pkl"
-            if os.path.exists(replay_buffer_path):
-                print("Loading replay buffer")
-                model.load_replay_buffer(replay_buffer_path)
+        model = PPO.load(os.path.join(config["load_model"][2],config["load_model"][1]), env=env, verbose=1, tensorboard_log=f"runs/{run.id}", **hyperparameters)
+        replay_buffer_path = os.path.join(config["load_model"][3],config["load_model"][1])+".pkl"
+        if os.path.exists(replay_buffer_path):
+            print("Loading replay buffer")
+            model.load_replay_buffer(replay_buffer_path)
             
-        print(model.policy)
-        print(model.policy.action_dist)
-        callbacks = [WandbCallback(gradient_save_freq=100,verbose=2,),
-                    LapTimeCallback(), 
-                    CheckpointCallback(save_freq=10000,
-                                        save_path=config["model_path"],
-                                        save_replay_buffer=config["checkpoints"][0],
-                                        replay_buffer_path=config["checkpoints"][1],
-                                        normalize=config["normalize"],
-                                        normalize_path=config["checkpoints"][2]),]
-                    #LearningRateCallback()]
-        model.learn(
-            total_timesteps=config["total_timesteps"],
-            callback=callbacks,
-        )
+    callbacks = [WandbCallback(gradient_save_freq=100,verbose=2,),
+                LapTimeCallback(), 
+                CheckpointCallback(save_freq=10000,
+                                    save_path=config["model_path"],
+                                    save_replay_buffer=config["checkpoints"][0],
+                                    replay_buffer_path=config["checkpoints"][1],
+                                    normalize=config["normalize"],
+                                    normalize_path=config["checkpoints"][2]),]
+                #LearningRateCallback()]
+    model.learn(
+        total_timesteps=config["total_timesteps"],
+        callback=callbacks,
+    )
 
-        test_model(model, env)
-        model.save(config["model_path"])
-        run.finish()
+    test_model(model, env)
+    model.save(config["model_path"])
+    run.finish()
+        
+        
+if __name__ == "__main__":
+    config, conf, hyperparameters = read_config("./config.yaml") # read configuration from the config file
+    env = create_env(config, conf, "center_line/center_line_1452") # create the environment
+                
+    testing = True
+    if testing:
+        test(config, env)
+    else:
+        train(config, conf, hyperparameters, env)
 
     env.close()
