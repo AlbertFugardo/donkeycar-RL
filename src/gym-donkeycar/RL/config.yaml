@@ -40,6 +40,7 @@ hyperparameters: {
                       )"
 }                   # default dict(log_std_init=0.0, net_arch=[dict(pi=[64, 64], vf=[64, 64])], activation_fn=nn.Tanh, optimizer_kwargs=dict(betas=(0.9,0.999), weight_decay=0.0))
 
-callbacks: ["LapTime",
+callbacks: ["Wandb",
+            "LapTime",
             "Checkpoint",]
             # "LearningRate"]

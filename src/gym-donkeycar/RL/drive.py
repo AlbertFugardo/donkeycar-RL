@@ -157,9 +157,12 @@ def train(config, conf, hyperparameters, env, cbks):
             print("Loading replay buffer")
             model.load_replay_buffer(replay_buffer_path)
             
-    callbacks = [WandbCallback(gradient_save_freq=100,verbose=2,),]
+    callbacks = []
     for cbk in cbks:
-        if cbk == "LapTime":
+        if cbk == "Wandb":
+            callbacks.append(WandbCallback(gradient_save_freq=100,verbose=2,))
+            print("Using WandbCallback")
+        elif cbk == "LapTime":
             callbacks.append(LapTimeCallback())
             print("Using LapTimeCallback")
         elif cbk == "Checkpoint":
