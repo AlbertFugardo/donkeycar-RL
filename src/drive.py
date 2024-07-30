@@ -95,7 +95,18 @@ def create_env(config, conf, center_line):
     def make_env():
         env = gym.make(config["env_name"], conf=conf)
         r = Reward(center_line)
-        env.set_reward_fn(r.time_sector_reward)
+        if config["reward"] == "reward_test":
+            env.set_reward_fn(r.reward_test)
+        elif config["reward"] == "reward_test2":
+            env.set_reward_fn(r.reward_test2)
+        elif config["reward"] == "reward_test3":
+            env.set_reward_fn(r.reward_test3)
+        elif config["reward"] == "progress_reward":
+            env.set_reward_fn(r.progress_reward)
+        elif config["reward"] == "progress_reward2":
+            env.set_reward_fn(r.progress_reward2)
+        else: # config["reward"] == "time_sector_reward" or none of the above
+            env.set_reward_fn(r.time_sector_reward)
         env = Monitor(env)  # record stats such as returns
         if config["use_autoencoder"]:
             env = AutoencoderWrapper(env, ae_path=config["ae_path"])

@@ -11,7 +11,8 @@ config: {
     horizon: 2,
     save_images: [False,15000,"autoencoders/test_images/"], # [if save images, num of steps/frames, output folder]
     load_model: [True, "ppo_trained_650k", "models_test", "replay_buffers", "vec_envs_test"], # [if loading a model, loaded model name, model folder, replay buffer folder, vec env folder]
-    checkpoints: [False, "replay_buffers", "vec_envs_test"] # [save_replay_buffer, save_replay_buffer path, vec_env path]
+    checkpoints: [False, "replay_buffers", "vec_envs_test"], # [save_replay_buffer, save_replay_buffer path, vec_env path]
+    reward: "time_sector_reward", # reward_test, reward_test2, reward_test3, progress_reward, progress_reward2 or time_sector_reward
     }
 
 conf: { # configuration of the environment
