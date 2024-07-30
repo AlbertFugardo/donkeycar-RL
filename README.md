@@ -41,12 +41,12 @@ Note the ``Time scale`` variable in the ``Settings`` block in the left. When tra
 ### Variational Autoencoder
 In the development of this project, we have seen that using a VAE to encode image observations is much better for the learning process of the model (that's demonstrated in more detail in our [paper](project_paper.pdf)). <br>
 The VAE architecture and code that we have used in this project have been obtained from: https://github.com/araffin/aae-train-donkeycar/tree/live-twitch-2 <br>
-If you want to use our trained VAEs, you can find them in ``/src/gym-donkeycar/RL/autoencoders/``. For example, you can ``use ae-32_100k.pkl``, which is an autoencoder trained using 100k images thoroughly collected driving the car around the track.
+If you want to use our trained VAEs, you can find them in ``/src/autoencoders/``. For example, you can ``use ae-32_100k.pkl``, which is an autoencoder trained using 100k images thoroughly collected driving the car around the track.
 
 
 ### Organization of the repo
-The main folder in this repo is ``src/gym-donkeycar/RL``. It is a folder created by us, in which we have developed all our code. Almost all of the other folders from this repo have been obtained from the projects mentioned in the [Credits](#credits) section. <br>
-The content of the ``RL`` folder are:
+The main folder in this repo is ``src/``. It is a folder created by us, in which we have developed all our code. The ``dependencies/`` folder contains three repositories (mentioned in the [Credits](#credits) section), necessary for our project, and in which we have made only a few modifications. <br>
+The contents of the ``src/`` folder are:
 - ``autoencoders``: folder with some trained autoencoders and their architecture and auxiliar functions.
 - ``center_line``: folder with some center line data and a notebook with the creation of the track sectors used in some rewards explained.
 - ``models_test``: folder with one trained model.
@@ -54,7 +54,7 @@ The content of the ``RL`` folder are:
 - ``callbacks.py``: file with some callback classes (they are called at every step).
 - ``config.yaml``: file with the configuration and hyperparameters used in ``drive.py``. The idea is that any change can be done in this config file, without the need of modifying ``drive.py``.
 - ``drive.py``: main file which calls the train or test and auxiliar functions.
-- ``rewards.py``: file with the reward functions engineered by us.
+- ``rewards.py``: file with the reward functions engineered by us. The last reward (``time_sector_reward``) is the one that has given us the best results.
 - ``wrappers.py``: file with some wrapper classes (they modify the behaviour of the environment, for example when taking one step).
 
 ### Training a model
@@ -64,20 +64,20 @@ Exception: Could not connect to server. Is it running? If you specified 'remote'
 ```
 <br>
 
-To train a model, just run from ``src/gym-donkeycar/RL``:
+To train a model, just run from ``src/``:
 ```bash
 python3 drive.py --train
 ```
 Note that if you want to train a model from scratch, you will have to put the ``load_model`` flag in ``config.yaml`` to False.
 
 ### Testing a model
-To test a model, just run from ``src/gym-donkeycar/RL``:
+To test a model, just run from ``src/``:
 
 ```bash
 python3 drive.py 
 ```
 
-You can find one model in ``/src/gym-donkeycar/RL/models_test/ppo_trained_650k.zip``, which has been trained for 650k steps (and its respective vec env can be found in ``src/gym-donkeycar/RL/vec_envs_test/ppo_trained_650k.pkl``).
+You can find one model in ``/src/models_test/ppo_trained_650k.zip``, which has been trained for 650k steps (and its respective vec env can be found in ``src/vec_envs_test/ppo_trained_650k.pkl``).
 
 ## Future Work
 The main restriction found in this project was the huge amount of computational power needed to train and run the models, which we didn't have. That's why the scope of the project had to be reduced. <br>
