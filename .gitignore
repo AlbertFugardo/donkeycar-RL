@@ -1,18 +1,20 @@
-src/gym-donkeycar/examples/reinforcement_learning/ppo_donkey.zip
-src/gym-donkeycar/examples/reinforcement_learning/rl_driver.h5
+dependencies/gym-donkeycar/examples/reinforcement_learning/ppo_donkey.zip
+dependencies/gym-donkeycar/examples/reinforcement_learning/rl_driver.h5
 
-src/gym-donkeycar/MY_CODE
+dependencies/gym-donkeycar/MY_CODE
 
-src/gym-donkeycar/RL/__pycache__
-src/gym-donkeycar/RL/autoencoders/__pycache__
-src/gym-donkeycar/RL/runs
-src/gym-donkeycar/RL/wandb
-src/gym-donkeycar/RL/models
-src/gym-donkeycar/RL/models_report
-src/gym-donkeycar/RL/vec_envs
-src/gym-donkeycar/RL/autoencoders/data_generated_track
-src/gym-donkeycar/RL/autoencoders/test_images
+src/__pycache__
+src/autoencoders/__pycache__
+src/runs
+src/wandb
+src/models
+src/models_report
+src/vec_envs
+src/autoencoders/data_generated_track
+src/autoencoders/test_images
 
-src/gym-donkeycar/mysim/data/images/
+dependencies/gym-donkeycar/mysim/data/images/
 
 **/.DS_Store
+
+donkey_env
