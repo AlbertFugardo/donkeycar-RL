@@ -1,16 +1,19 @@
--e ./src/gym-donkeycar
--e ./src/stable-baselines3
+-e ./dependencies/gym-donkeycar
+-e ./dependencies/stable-baselines3
 
-opencv-python
-seaborn
-zmq
-optuna
-optuna_integration
-shimmy
+opencv-python==4.9.0.80
+seaborn==0.13.2
+zmq==0.0.0
+optuna==3.6.0
+optuna_integration==3.6.0
+shimmy==1.3.0
 
 # for the autoencoder
-joblib
-imgaug
+joblib==1.3.2
+imgaug==0.4.0
 
-wandb
-tensorboard
+wandb==0.16.5
+tensorboard==2.9.1
+
+protobuf==3.19.6
+prettytable==3.10.2
