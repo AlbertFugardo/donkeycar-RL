@@ -102,3 +102,22 @@ Related Paper: [Optimizing Autonomous Racing in the Donkey Car Simulator: Novel 
 - [rl-baselines3-zoo](https://github.com/DLR-RM/rl-baselines3-zoo): GitHub repo of RL Baselines3 Zoo, a training framework for Stable Baselines3 reinforcement learning agents.
 
 - [Part 1](https://www.youtube.com/watch?v=ngK33h00iBE), [Part 2](https://www.youtube.com/watch?v=DUqssFvcSOY&t=15s) and [Part 3](https://www.youtube.com/watch?v=v8j2bpcE4Rg): a series of videos from Antonin Raffin that introduce the DonkeyCar simulator and its training framework.
+
+## How to Cite This Project
+
+If you use this code or the associated paper in your research, please cite this repository. You can use the following BibTeX entry:
+
+```bibtex
+@misc{Fugardo2024donkeycarRL,
+	author = {Fugardo, Albert},
+	title = {{donkeycar-RL: Autonomous Driving with Reinforcement Learning}},
+	year = {2024},
+	publisher = {GitHub},
+	journal = {GitHub repository},
+	howpublished = {\url{https://github.com/AlbertFugardo/donkeycar-RL}},
+	note = {Accessed on [CURRENT_DATE_OF_ACCESS]. Paper available at \url{https://github.com/AlbertFugardo/donkeycar-RL/blob/main/project_paper.pdf}},
+	commit = {88065af66015ae855314b88eae5ae8d17d2a1105}
+}
+```
+
+Please replace ``[CURRENT_DATE_OF_ACCESS]`` with the date you accessed the repository.
