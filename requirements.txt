@@ -15,5 +15,5 @@ imgaug==0.4.0
 wandb==0.16.5
 tensorboard==2.9.1
 
-protobuf==4.25.8
+protobuf==6.33.5
 prettytable==3.10.2
